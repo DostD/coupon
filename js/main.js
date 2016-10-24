@@ -129,18 +129,110 @@ function toggleFilter(e){
     var parent = e.target.closest('.catalog_filters__item');
 
     if(parent.classList.contains('filter--open')){
-
       parent.classList.remove('filter--open');
-
     }else{
-
       parent.classList.add('filter--open');
-
     }
 }
 
 for(var i=0; i<titles.length; i++){
    titles[i].addEventListener('click' , toggleFilter);
 }
+
+
+
+/*-----------------------------Filter cards by type-------------------------------*/
+
+var filterByTypeList = document.querySelector('.filter__content');
+var typeChecks = filterByTypeList.querySelectorAll('.checkbox__input');
+
+for(var i=0; i<typeChecks.length; i++){
+    typeChecks[i] = typeChecks[i].checked = true;
+}
+
+
+function filterByType(e){
+  e.preventDefault;
+  if(e.target.checked){
+   for(var i=0; i<productCards.length; i++){
+    if (productCards[i].dataset.type == e.target.nextElementSibling.nextElementSibling.innerHTML){
+        productCards[i].style.display = 'inline-block';
+    }
+   }
+ } else {
+   for(var i=0; i<productCards.length; i++){
+    if (productCards[i].dataset.type == e.target.nextElementSibling.nextElementSibling.innerHTML){
+        productCards[i].style.display = 'none';
+    }
+   }
+ }
+}
+
+for (var j=0; j<typeChecks.length; j++){
+ typeChecks[j].addEventListener('change', filterByType);
+}
+
+/*------------------------------------Show only special offers--------------------------------------*/
+
+var specialCheck = document.querySelector('.catalog_filters__item:nth-child(2) .checkbox__input');
+
+function showSpecialCards(e){
+ e.preventDefault;
+  if(e.target.checked){
+     for(var i=0; i<productCards.length; i++){
+        if(productCards[i].dataset.special == 'true'){
+            productCards[i].style.display = 'inline-block';
+        }else{
+            productCards[i].style.display = 'none';
+        }
+     }
+  } else{
+    for(var i=0; i<productCards.length; i++){
+     productCards[i].style.display = 'inline-block';
+    }
+  }
+}
+
+specialCheck.addEventListener('change' , showSpecialCards);
+
+
+/*-------------------------------------Filter by input price------------------------------------------*/
+
+var prices = document.querySelector('.filter__column:nth-child(2)');
+var priceFrom = prices.querySelector('.filter__input');
+var priceTo = prices.querySelector('.filter__input:nth-child(2)');
+
+var priceFromVal = 0;
+var priceToVal = 9999999;
+
+function filterByPrice(e){
+  e.preventDefault;
+
+  priceFromVal = Number(priceFrom.value);
+  priceToVal = Number(priceTo.value);
+
+  if(e.target.length !=0){
+    for(var i=0; i<productCards.length; i++){
+        if(productCards[i].dataset.price >= priceFromVal && productCards[i].dataset.price <= priceToVal){
+            productCards[i].style.display = 'inline-block';
+        } else {
+            productCards[i].style.display = 'none';
+        }
+    }
+  }else{
+    for(var i=0; i<productCards.length; i++){
+     productCards[i].style.display = 'inline-block';
+    }
+  }
+}
+
+priceFrom.addEventListener('change' , filterByPrice);
+priceTo.addEventListener('change' , filterByPrice);
+
+/*---------------------------------Filter by experation date-----------------------------------*/
+
+
+var dateInput = document.querySelector('.catalog_filters__item:nth-child(4) .input');
+
 
 
