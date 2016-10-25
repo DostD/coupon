@@ -232,7 +232,54 @@ priceTo.addEventListener('change' , filterByPrice);
 /*---------------------------------Filter by experation date-----------------------------------*/
 
 
-var dateInput = document.querySelector('.catalog_filters__item:nth-child(4) .input');
+var filterDate = document.querySelector('.catalog_filters__item:nth-child(4) .input');
 
+function filterByDate (e){
+    e.preventDefault;
+    var filterDateInput = new Date(filterDate.valueAsDate);
+    filterDateInput = filterDateInput/1000;
+    for(var i=0; i<productCards.length; i++){
+        var cardDate = getInitialSeconds(productCards[i])
+        if(cardDate < filterDateInput){
+            productCards[i].style.display = 'none';
+        } else {
+            productCards[i].style.display = 'inline-block';
+        }
+    }
+}
+
+filterDate.addEventListener('change' , filterByDate);
+
+/*-----------------------------------Filter by metro station------------------------------------*/
+
+
+var filterByMetroList = document.querySelector('.catalog_filters__item:nth-child(5) .filter__content');
+var metroChecks = filterByMetroList.querySelectorAll('.checkbox__input');
+
+for(var i=0; i<metroChecks.length; i++){
+    metroChecks[i] = metroChecks[i].checked = true;
+}
+
+
+function filterByMetro(e){
+  e.preventDefault;
+  if(e.target.checked){
+   for(var i=0; i<productCards.length; i++){
+    if (productCards[i].dataset.metro == e.target.nextElementSibling.nextElementSibling.innerHTML){
+        productCards[i].style.display = 'inline-block';
+    }
+   }
+ } else {
+   for(var i=0; i<productCards.length; i++){
+    if (productCards[i].dataset.metro == e.target.nextElementSibling.nextElementSibling.innerHTML){
+        productCards[i].style.display = 'none';
+    }
+   }
+ }
+}
+
+for (var j=0; j<metroChecks.length; j++){
+ metroChecks[j].addEventListener('change', filterByMetro);
+}
 
 
