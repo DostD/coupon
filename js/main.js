@@ -89,6 +89,28 @@ for(i=0; i<productCards.length; i++){
 
  makeCart();
 
+/*-------------------Open / close buy window----------------------*/
+
+
+var buyBtn = document.querySelector('.catalog_basket__summ a');
+var overlay = document.querySelector('.modal_underlay');
+var modalClose = document.querySelector('.modal__close');
+
+buyBtn.addEventListener('click' , function(e){
+  e.preventDefault();
+  document.querySelector('.modal_order').style.display = 'block';
+  document.querySelector('.modal_underlay').style.display = 'block';
+});
+
+function closeModal(e){
+  e.preventDefault();
+  document.querySelector('.modal_order').style.display = 'none';
+  document.querySelector('.modal_underlay').style.display = 'none';
+}
+
+overlay.addEventListener('click' , closeModal);
+modalClose.addEventListener('click' , closeModal);
+
 /*----------------------Change layout---------------------------*/
 
 var viewItems = document.querySelectorAll('.catalog_view__item');
@@ -152,7 +174,7 @@ for(var i=0; i<typeChecks.length; i++){
 
 
 function filterByType(e){
-  e.preventDefault;
+  e.preventDefault();
   if(e.target.checked){
    for(var i=0; i<productCards.length; i++){
     if (productCards[i].dataset.type == e.target.nextElementSibling.nextElementSibling.innerHTML){
@@ -177,7 +199,7 @@ for (var j=0; j<typeChecks.length; j++){
 var specialCheck = document.querySelector('.catalog_filters__item:nth-child(2) .checkbox__input');
 
 function showSpecialCards(e){
- e.preventDefault;
+ e.preventDefault();
   if(e.target.checked){
      for(var i=0; i<productCards.length; i++){
         if(productCards[i].dataset.special == 'true'){
@@ -206,7 +228,7 @@ var priceFromVal = 0;
 var priceToVal = 9999999;
 
 function filterByPrice(e){
-  e.preventDefault;
+  e.preventDefault();
 
   priceFromVal = Number(priceFrom.value);
   priceToVal = Number(priceTo.value);
@@ -235,7 +257,7 @@ priceTo.addEventListener('change' , filterByPrice);
 var filterDate = document.querySelector('.catalog_filters__item:nth-child(4) .input');
 
 function filterByDate (e){
-    e.preventDefault;
+    e.preventDefault();
     var filterDateInput = new Date(filterDate.valueAsDate);
     filterDateInput = filterDateInput/1000;
     for(var i=0; i<productCards.length; i++){
@@ -262,7 +284,7 @@ for(var i=0; i<metroChecks.length; i++){
 
 
 function filterByMetro(e){
-  e.preventDefault;
+  e.preventDefault();
   if(e.target.checked){
    for(var i=0; i<productCards.length; i++){
     if (productCards[i].dataset.metro == e.target.nextElementSibling.nextElementSibling.innerHTML){
@@ -281,5 +303,6 @@ function filterByMetro(e){
 for (var j=0; j<metroChecks.length; j++){
  metroChecks[j].addEventListener('change', filterByMetro);
 }
+
 
 
