@@ -89,7 +89,7 @@ for(i=0; i<productCards.length; i++){
 
  makeCart();
 
-/*-------------------Open / close buy window----------------------*/
+/*-------------------Open / close buy modal----------------------*/
 
 
 var buyBtn = document.querySelector('.catalog_basket__summ a');
@@ -225,15 +225,31 @@ var priceFrom = prices.querySelector('.filter__input');
 var priceTo = prices.querySelector('.filter__input:nth-child(2)');
 
 var priceFromVal = 0;
-var priceToVal = 9999999;
+var priceToVal = 999999999;
 
 function filterByPrice(e){
   e.preventDefault();
 
-  priceFromVal = Number(priceFrom.value);
-  priceToVal = Number(priceTo.value);
+  if(priceFrom.value != "" && priceTo.value != ""){
+    priceFromVal = Number(priceFrom.value);
+    priceToVal = Number(priceTo.value);
+    showCards();
+  }else if(priceFrom.value != "" && priceTo.value == ""){
+    priceToVal = 9999999;
+    priceFromVal = Number(priceFrom.value);
+    showCards();
+  }else if(priceFrom.value == "" && priceTo.value != ""){
+    priceFromVal = 0;
+    priceToVal = Number(priceTo.value);
+    showCards();
+  }else{
+      for(var i=0; i<productCards.length; i++){
+      productCards[i].style.display = 'inline-block';
+    }
+  }
+}
 
-  if(e.target.length !=0){
+function showCards (){
     for(var i=0; i<productCards.length; i++){
         if(productCards[i].dataset.price >= priceFromVal && productCards[i].dataset.price <= priceToVal){
             productCards[i].style.display = 'inline-block';
@@ -241,11 +257,6 @@ function filterByPrice(e){
             productCards[i].style.display = 'none';
         }
     }
-  }else{
-    for(var i=0; i<productCards.length; i++){
-     productCards[i].style.display = 'inline-block';
-    }
-  }
 }
 
 priceFrom.addEventListener('change' , filterByPrice);
@@ -303,6 +314,54 @@ function filterByMetro(e){
 for (var j=0; j<metroChecks.length; j++){
  metroChecks[j].addEventListener('change', filterByMetro);
 }
+
+/*--------------------------------sort by price incr / decr-----------------------------------------*/
+
+var incrBtn = document.querySelector ('.catalog_sort__item');
+var decrBtn = document.querySelector ('.catalog_sort__item:nth-child(2)');
+var catalogue = document.querySelector ('.catalog__list');
+var pricesList = [];
+
+for(var i=0; i<productCards.length; i++){
+    var priceItem = productCards[i].dataset.price;
+    priceItem = Number(priceItem);
+    pricesList.push(priceItem);
+}
+
+function renderCatalogueIncr(e){
+  e.preventDefault();
+  var pricesListIncr = pricesList.sort(function(a,b){return a - b});
+  for(var i=0; i<productCards.length; i++){
+    catalogue.removeChild(productCards[i]);
+  }
+
+  for(var i=0; i<pricesListIncr.length; i++){
+    for(var j=0; j<productCards.length; j++){
+     if(pricesListIncr[i] == productCards[j].dataset.price){
+        catalogue.appendChild(productCards[j]);
+     }
+    }
+  }
+}
+
+function renderCatalogueDecr(e){
+  e.preventDefault();
+  var pricesListDecr = pricesList.sort(function(a,b){return b - a});
+  for(var i=0; i<productCards.length; i++){
+    catalogue.removeChild(productCards[i]);
+  }
+
+  for(var i=0; i<pricesListDecr.length; i++){
+    for(var j=0; j<productCards.length; j++){
+     if(pricesListDecr[i] == productCards[j].dataset.price){
+        catalogue.appendChild(productCards[j]);
+     }
+    }
+  }
+}
+
+incrBtn.addEventListener('click' , renderCatalogueIncr);
+decrBtn.addEventListener('click' , renderCatalogueDecr);
 
 
 

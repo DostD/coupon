@@ -112,14 +112,14 @@ function getPeriodWord(period, num){
     }
 }
 
-var testCases = [86400,86399,3599,0,61];
+// var testCases = [86400,86399,3599,0,61];
 
-testCases.forEach(function(seconds){
-    console.group(seconds);
-  periods.forEach(function(period){
-    console.log(calcRemainTime(seconds,period));
-  })
-  console.groupEnd(seconds);
-});
+// testCases.forEach(function(seconds){
+//     console.group(seconds);
+//   periods.forEach(function(period){
+//     console.log(calcRemainTime(seconds,period));
+//   })
+//   console.groupEnd(seconds);
+// });
 
 initTimers();
