@@ -161,207 +161,92 @@ for(var i=0; i<titles.length; i++){
    titles[i].addEventListener('click' , toggleFilter);
 }
 
-
-
-/*-----------------------------Filter cards by type-------------------------------*/
-
-var filterByTypeList = document.querySelector('.filter__content');
-var typeChecks = filterByTypeList.querySelectorAll('.checkbox__input');
-
-for(var i=0; i<typeChecks.length; i++){
-    typeChecks[i] = typeChecks[i].checked = true;
-}
-
-
-function filterByType(e){
-  e.preventDefault();
-  if(e.target.checked){
-   for(var i=0; i<productCards.length; i++){
-    if (productCards[i].dataset.type == e.target.nextElementSibling.nextElementSibling.innerHTML){
-        productCards[i].style.display = 'inline-block';
-    }
-   }
- } else {
-   for(var i=0; i<productCards.length; i++){
-    if (productCards[i].dataset.type == e.target.nextElementSibling.nextElementSibling.innerHTML){
-        productCards[i].style.display = 'none';
-    }
-   }
- }
-}
-
-for (var j=0; j<typeChecks.length; j++){
- typeChecks[j].addEventListener('change', filterByType);
-}
-
-/*------------------------------------Show only special offers--------------------------------------*/
-
-var specialCheck = document.querySelector('.catalog_filters__item:nth-child(2) .checkbox__input');
-
-function showSpecialCards(e){
- e.preventDefault();
-  if(e.target.checked){
-     for(var i=0; i<productCards.length; i++){
-        if(productCards[i].dataset.special == 'true'){
-            productCards[i].style.display = 'inline-block';
-        }else{
-            productCards[i].style.display = 'none';
-        }
-     }
-  } else{
-    for(var i=0; i<productCards.length; i++){
-     productCards[i].style.display = 'inline-block';
-    }
-  }
-}
-
-specialCheck.addEventListener('change' , showSpecialCards);
-
-
-/*-------------------------------------Filter by input price------------------------------------------*/
-
-var prices = document.querySelector('.filter__column:nth-child(2)');
-var priceFrom = prices.querySelector('.filter__input');
-var priceTo = prices.querySelector('.filter__input:nth-child(2)');
-
-var priceFromVal = 0;
-var priceToVal = 999999999;
-
-function filterByPrice(e){
-  e.preventDefault();
-
-  if(priceFrom.value != "" && priceTo.value != ""){
-    priceFromVal = Number(priceFrom.value);
-    priceToVal = Number(priceTo.value);
-    showCards();
-  }else if(priceFrom.value != "" && priceTo.value == ""){
-    priceToVal = 9999999;
-    priceFromVal = Number(priceFrom.value);
-    showCards();
-  }else if(priceFrom.value == "" && priceTo.value != ""){
-    priceFromVal = 0;
-    priceToVal = Number(priceTo.value);
-    showCards();
-  }else{
-      for(var i=0; i<productCards.length; i++){
-      productCards[i].style.display = 'inline-block';
-    }
-  }
-}
-
-function showCards (){
-    for(var i=0; i<productCards.length; i++){
-        if(productCards[i].dataset.price >= priceFromVal && productCards[i].dataset.price <= priceToVal){
-            productCards[i].style.display = 'inline-block';
-        } else {
-            productCards[i].style.display = 'none';
-        }
-    }
-}
-
-priceFrom.addEventListener('change' , filterByPrice);
-priceTo.addEventListener('change' , filterByPrice);
-
-/*---------------------------------Filter by experation date-----------------------------------*/
-
-
-var filterDate = document.querySelector('.catalog_filters__item:nth-child(4) .input');
-
-function filterByDate (e){
-    e.preventDefault();
-    var filterDateInput = new Date(filterDate.valueAsDate);
-    filterDateInput = filterDateInput/1000;
-    for(var i=0; i<productCards.length; i++){
-        var cardDate = getInitialSeconds(productCards[i])
-        if(cardDate < filterDateInput){
-            productCards[i].style.display = 'none';
-        } else {
-            productCards[i].style.display = 'inline-block';
-        }
-    }
-}
-
-filterDate.addEventListener('change' , filterByDate);
-
-/*-----------------------------------Filter by metro station------------------------------------*/
-
-
-var filterByMetroList = document.querySelector('.catalog_filters__item:nth-child(5) .filter__content');
-var metroChecks = filterByMetroList.querySelectorAll('.checkbox__input');
-
-for(var i=0; i<metroChecks.length; i++){
-    metroChecks[i] = metroChecks[i].checked = true;
-}
-
-
-function filterByMetro(e){
-  e.preventDefault();
-  if(e.target.checked){
-   for(var i=0; i<productCards.length; i++){
-    if (productCards[i].dataset.metro == e.target.nextElementSibling.nextElementSibling.innerHTML){
-        productCards[i].style.display = 'inline-block';
-    }
-   }
- } else {
-   for(var i=0; i<productCards.length; i++){
-    if (productCards[i].dataset.metro == e.target.nextElementSibling.nextElementSibling.innerHTML){
-        productCards[i].style.display = 'none';
-    }
-   }
- }
-}
-
-for (var j=0; j<metroChecks.length; j++){
- metroChecks[j].addEventListener('change', filterByMetro);
-}
-
-/*--------------------------------sort by price incr / decr-----------------------------------------*/
+/*--------------------------------sort by Incrprice / decr-----------------------------------------*/
 
 var incrBtn = document.querySelector ('.catalog_sort__item');
 var decrBtn = document.querySelector ('.catalog_sort__item:nth-child(2)');
 var catalogue = document.querySelector ('.catalog__list');
 var pricesList = [];
+var discountsList = [];
 
 for(var i=0; i<productCards.length; i++){
     var priceItem = productCards[i].dataset.price;
     priceItem = Number(priceItem);
     pricesList.push(priceItem);
+    pricesList.sort(function(a,b){return a - b});
 }
 
-function renderCatalogueIncr(e){
-  e.preventDefault();
-  var pricesListIncr = pricesList.sort(function(a,b){return a - b});
+for(var i=0; i<productCards.length; i++){
+    var discount = productCards[i].querySelector('.catalog_cart__discount').innerHTML;
+    discount = Number(discount.slice(0,-1));
+    discountsList.push(discount);
+    discountsList.sort(function(a,b){return b - a});
+}
+
+function clearCatalogue(){
   for(var i=0; i<productCards.length; i++){
     catalogue.removeChild(productCards[i]);
   }
+}
 
-  for(var i=0; i<pricesListIncr.length; i++){
+function renderByPriceIncr(e){
+  e.preventDefault();
+  clearCatalogue();
+
+  for(var i=0; i<pricesList.length; i++){
     for(var j=0; j<productCards.length; j++){
-     if(pricesListIncr[i] == productCards[j].dataset.price){
+     if(pricesList[i] == productCards[j].dataset.price){
         catalogue.appendChild(productCards[j]);
      }
     }
   }
 }
 
-function renderCatalogueDecr(e){
+function renderByDiscountDecr(e){
   e.preventDefault();
-  var pricesListDecr = pricesList.sort(function(a,b){return b - a});
-  for(var i=0; i<productCards.length; i++){
-    catalogue.removeChild(productCards[i]);
-  }
+  clearCatalogue();
 
-  for(var i=0; i<pricesListDecr.length; i++){
-    for(var j=0; j<productCards.length; j++){
-     if(pricesListDecr[i] == productCards[j].dataset.price){
+  for(var i=0; i<discountsList.length; i++){
+    for(var j=0; j<discountsList.length; j++){
+     var productDiscount = productCards[j].querySelector('.catalog_cart__discount').innerHTML;
+     productDiscount = Number(productDiscount.slice(0,-1));
+
+     if(discountsList[i] == productDiscount){
         catalogue.appendChild(productCards[j]);
      }
     }
   }
 }
 
-incrBtn.addEventListener('click' , renderCatalogueIncr);
-decrBtn.addEventListener('click' , renderCatalogueDecr);
+incrBtn.addEventListener('click' , renderByPriceIncr);
+decrBtn.addEventListener('click' , renderByDiscountDecr);
 
+/*--------------------------Validate modal input form--------------------------------*/
 
+var regs = {};
+
+regs.name = /^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']?$/u;
+regs.phone = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/i;
+regs.mail = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
+
+var inputFields = {};
+
+inputFields.name = document.querySelector('.modal__form .modal__line .input');
+inputFields.phone = document.querySelector('.modal__form .modal__line:nth-child(2) .input');
+inputFields.mail = document.querySelector('.modal__form .modal__line:nth-child(3) .input');
+
+function checkInput(e){
+  e.preventDefault();
+  for (var x in inputFields){
+   for (var y in regs){
+    if(inputFields[x].test(regs[y]) == true){
+
+    }
+   }
+  }
+}
+
+function throwEror(){
+
+}
 

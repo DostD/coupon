@@ -7,8 +7,6 @@ var SECONDS = 3;
 var periods = [DAYS,HOURS,MINUTES,SECONDS];
 /*
 timer{elem > timer, seconds}
-
-
  */
  var specialProducts = document.querySelectorAll('.catalog_cart--special');
 
@@ -20,6 +18,7 @@ timer{elem > timer, seconds}
      endingDate = new Date(endingDate.split(' ')[0]);
      endingDate = endingDate/1000;
      return endingDate;
+
   }
 
 
@@ -112,14 +111,5 @@ function getPeriodWord(period, num){
     }
 }
 
-// var testCases = [86400,86399,3599,0,61];
-
-// testCases.forEach(function(seconds){
-//     console.group(seconds);
-//   periods.forEach(function(period){
-//     console.log(calcRemainTime(seconds,period));
-//   })
-//   console.groupEnd(seconds);
-// });
 
 initTimers();
