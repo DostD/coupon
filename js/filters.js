@@ -1,19 +1,19 @@
 function enableFilters(){
-  var productCards = document.querySelectorAll('.catalog_cart');
+  var productCards = document.querySelectorAll('.catalog__item');
 
   var filterState = {
    type: [],
-   special: true,
+   special: false,
    price:{from:0,to:99999999},
-   date:0,
+   date:null,
    metro:[]
   };
 
   var filterFunctions = {
    type: validateType,
    special: validateSpecial,
-   //price: validatePrice,
-   //date: validateDate,
+   price: validatePrice,
+   date: validateDate,
    metro: validateMetro
   };
 
@@ -24,6 +24,7 @@ function enableFilters(){
     }else{
       arr.splice(arr.indexOf(item),1);
     }
+    console.log(arr);
   }
 
   function handleMetro(e) {
@@ -53,53 +54,49 @@ function enableFilters(){
   }
 
   function handlePrice(e){
-    var prices = document.querySelector('.filter__column:nth-child(2)');
-    var priceFrom = prices.querySelector('.filter__input');
-    var priceTo = prices.querySelector('.filter__input:nth-child(2)');
 
-    if(state.from != "" && state.to != ""){
-      filterState.price.from = priceFrom.value;
-      filterState.price.to = pticeTo.value;
-    }else if(state.from != "" && state.to == ""){
-      filterState.price.from = priceFrom.value;
-      filterState.price.to = 999999999;
-    }else if(state.from == "" && state.to != ""){
-      state.from = 0;
-      filterState.price.to = pticeTo.value;
-    } else {
-      filterState.price.from = 0;
-      filterState.price.to = 999999999;
-    }
+    var prices = document.querySelector('.filter__column:nth-child(2)');
+    var priceFrom = prices.querySelector('input');
+    var priceTo = prices.querySelector('input:nth-child(2)');
+
+    filterState.price.from = Number(priceFrom.value);
+    filterState.price.to = Number(priceTo.value);
+
+    refilter();
 
 
   }
 
   function refilter() {
-
+    console.log(filterState);
+    var productCards = document.querySelectorAll('.catalog_cart');
       for (var i = 0; i<productCards.length; i++) {
           var ok = true;
           for (var key in filterFunctions) {
               var validator = filterFunctions[key]
               ok = ok && validator(productCards[i].dataset, filterState[key])
+              console.log(ok)
              }
+             console.log('-')
           productCards[i].style.display = ok ? 'inline-block' : 'none';
       }
+      //console.log(ok);
   }
 
   var filterByTypeList = document.querySelector('.filter__content');
   var typeChecks = filterByTypeList.querySelectorAll('.checkbox__input');
 
-  function validateType(card , state){
+  function validateType(card, state){
     var check = false;
-    if(state.includes(card.type)){
+    if(state.includes(card.type) || state.length == 0){
       check = true;
     }
     return check;
   }
 
   function validateMetro(card,state){
-    var check=false;
-    if(state.includes(card.type)){
+    var check= false;
+    if(state.includes(card.metro) || state.length == 0){
       check = true;
     }
     return check;
@@ -126,18 +123,31 @@ function enableFilters(){
     }
 
       var cardDate = getInitialSeconds(card)
-      if (cardDate < state){
-        return true;
+      var check = false;
+      if (cardDate < state || state.length == 0){
+        check = true;
       }
-
+     return check;
   }
 
 
   function validatePrice(card, state){
     var check = false;
-    if(card.price >= state.from && card.price <= state.to){
+
+    if(state.from == "" && state.to == ""){
+      state.from = 0;
+      state.to = 999999999;
+    }else if(state.from != "" && state.to == ""){
+      state.to = 999999999;
+    }else if(state.from == "" && state.to != ""){
+      state.from = 0;
+    }
+
+    if(Number(card.price) >= state.from && Number(card.price) <= state.to){
           check = true;
-      }
+          console.log(Number(card.price))
+          console.log(state)
+    }
      return check;
   }
 
@@ -152,5 +162,16 @@ function enableFilters(){
     for(var i=0; i<metrosItems.length; i++){
       metrosItems[i].addEventListener('change' , handleMetro);
     }
+
+  var specialCheck = document.querySelector('.catalog_filters__item:nth-child(2) input');
+  specialCheck.addEventListener('change',handleSpecial);
+
+  var dateInput = document.querySelector('.catalog_filters__item:nth-child(4) input');
+  dateInput.addEventListener('change', handleDate);
+
+  var priceFromInput = document.querySelector('.catalog_filters__item:nth-child(3) input');
+  var priceToInput = document.querySelector('.catalog_filters__item:nth-child(3) input:nth-child(2)');
+  priceFromInput.addEventListener('change', handlePrice);
+  priceToInput.addEventListener('change', handlePrice);
 }
 

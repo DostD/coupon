@@ -23,7 +23,7 @@ function renderCards(reqJSON){
     var parent = document.querySelector('.catalog__list');
     var el = document.createElement('a');
     el.className = 'catalog_cart catalog__item';
-    var attrs = ['special', 'type', 'price', 'special', 'dateTo', 'dateFrom'];
+    var attrs = ['special', 'metro', 'type', 'price', 'special', 'dateTo', 'dateFrom'];
     attrs.forEach(function(attr) {
       el.dataset[attr] = reqJSON[i][attr]
     })
@@ -60,6 +60,7 @@ function renderCards(reqJSON){
   sortCatalogue();
   enableTimers();
   enableFilters();
+  // modalValidator();
 }
 
 
@@ -288,31 +289,38 @@ function sortCatalogue(){
   decrBtn.addEventListener('click' , renderByDiscountDecr);
 }
 /*--------------------------Validate modal input form--------------------------------*/
+// function modalValidator(){
+  var regs = [];
 
-var regs = {};
+  regs[0] = /^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']?$/u;
+  regs[1] = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/i;
+  regs[2] = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
 
-regs.name = /^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']?$/u;
-regs.phone = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/i;
-regs.mail = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
+  var inputFields = [];
 
-var inputFields = {};
 
-inputFields.name = document.querySelector('.modal__form .modal__line .input');
-inputFields.phone = document.querySelector('.modal__form .modal__line:nth-child(2) .input');
-inputFields.mail = document.querySelector('.modal__form .modal__line:nth-child(3) .input');
+  function checkInput(e){
+    e.preventDefault();
+     inputFields[0] = document.querySelector('.modal__form>.modal__line>.input').value;
+     inputFields[1] = document.querySelector('.modal__form>.modal__line:nth-child(2)>.input').value;
+     inputFields[2] = document.querySelector('.modal__form>.modal__line:nth-child(3)>.input').value;
 
-function checkInput(e){
-  e.preventDefault();
-  for (var x in inputFields){
-   for (var y in regs){
-    if(inputFields[x].test(regs[y]) == true){
-
+    for (var i=0; i<regs.length; i++){
+      if(regs[i].test(inputFields[i]) == true){
+         success();
+      }
     }
-   }
   }
-}
 
-function throwEror(){
+  function success(e){
+     e.preventDefault();
+     var modal = document.querySelector('.modal_order');
+     var successModal = document.querySelector('.modal_success');
+     succesModal.style.display = 'block';
+     modal.style.display = 'none';
+  }
 
-}
 
+    var wantBtn = document.querySelector('.want-btn');
+    wantBtn.addEventListener('click', checkInput);
+// }
