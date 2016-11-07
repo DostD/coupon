@@ -38,7 +38,7 @@ function enableTimers(){
           obj.seconds = initialSec-Math.floor(now);
 
           timers.push(obj);
-
+          //тут раньше был setInterval
          if(obj.seconds <= 0){
           specialProducts[i].classList.add('catalog_cart--disabled');
          }
@@ -52,7 +52,6 @@ function enableTimers(){
 
 
       for(var i=0; i<timers.length; i++){
-
           decrementTimer(i);
       }
   }

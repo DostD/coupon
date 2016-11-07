@@ -4,7 +4,7 @@ function enableFilters(){
   var filterState = {
    type: [],
    special: false,
-   price:{from:0,to:99999999},
+   price:{from:null,to:null},
    date:null,
    metro:[]
   };
@@ -33,59 +33,19 @@ function enableFilters(){
       pushOrSplice(filterState.metro, title, checkbox.checked)
       refilter()
   }
+  function validateMetro(card,state){
+    var check= false;
+    if(state.includes(card.metro) || state.length == 0){
+      check = true;
+    }
+    return check;
+  }
   function handleType(e){
       var checkbox = e.target
       var title = e.target.nextElementSibling.nextElementSibling.innerHTML;
       pushOrSplice(filterState.type, title, checkbox.checked);
       refilter()
-
   }
-  function handleSpecial(e){
-    filterState.special=true;
-    refilter()
-  }
-
-  function handleDate(e){
-    var checkbox = e.target;
-    var filterDateInput = new Date(checkbox.valueAsDate);
-    filterDateInput = filterDateInput/1000;
-    filterState.date = filterDateInput;
-    refilter()
-  }
-
-  function handlePrice(e){
-
-    var prices = document.querySelector('.filter__column:nth-child(2)');
-    var priceFrom = prices.querySelector('input');
-    var priceTo = prices.querySelector('input:nth-child(2)');
-
-    filterState.price.from = Number(priceFrom.value);
-    filterState.price.to = Number(priceTo.value);
-
-    refilter();
-
-
-  }
-
-  function refilter() {
-    console.log(filterState);
-    var productCards = document.querySelectorAll('.catalog_cart');
-      for (var i = 0; i<productCards.length; i++) {
-          var ok = true;
-          for (var key in filterFunctions) {
-              var validator = filterFunctions[key]
-              ok = ok && validator(productCards[i].dataset, filterState[key])
-              console.log(ok)
-             }
-             console.log('-')
-          productCards[i].style.display = ok ? 'inline-block' : 'none';
-      }
-      //console.log(ok);
-  }
-
-  var filterByTypeList = document.querySelector('.filter__content');
-  var typeChecks = filterByTypeList.querySelectorAll('.checkbox__input');
-
   function validateType(card, state){
     var check = false;
     if(state.includes(card.type) || state.length == 0){
@@ -94,14 +54,15 @@ function enableFilters(){
     return check;
   }
 
-  function validateMetro(card,state){
-    var check= false;
-    if(state.includes(card.metro) || state.length == 0){
-      check = true;
+  function handleSpecial(e){
+    var checkbox = e.target
+    if (checkbox.checked){
+      filterState.special=true;
+    } else if(! checkbox.checked){
+      filterState.special=false;
     }
-    return check;
+    refilter()
   }
-
   function validateSpecial(card,state){
     var check  = true;
     if(state != false){
@@ -111,6 +72,14 @@ function enableFilters(){
     } return check;
   }
 
+  function handleDate(){
+    var inputDate = document.querySelector('.catalog_filters__item:nth-child(4) input');
+    var dateValue = (inputDate.valueAsDate)/1000;
+    filterState.date = dateValue;
+    console.log(filterState.date);
+
+    refilter()
+  }
   function validateDate (card , state){
 
       function getInitialSeconds(card){
@@ -121,36 +90,55 @@ function enableFilters(){
        return endingDate;
 
     }
-
       var cardDate = getInitialSeconds(card)
       var check = false;
-      if (cardDate < state || state.length == 0){
-        check = true;
+      console.log(cardDate)
+
+      if (cardDate > state || state == null){
+        check = true
       }
      return check;
   }
 
+  function handlePrice(e){
 
+    var prices = document.querySelector('.filter__column:nth-child(2)');
+    var priceFrom = Number(prices.querySelector('input').value);
+    var priceTo = Number(prices.querySelector('input:nth-child(2)').value);
+
+    if(priceFrom == "" && priceTo == ""){
+      filterState.price.from = 0;
+      filterState.price.to = 999999999;
+    }else if(priceFrom != "" && priceTo == ""){
+      filterState.price.from = Number(priceFrom);
+      filterState.price.to = 999999999;
+    }else if(priceFrom == "" && priceTo != ""){
+      filterState.price.from = 0;
+      filterState.price.to = Number(priceTo);
+    } else {
+      filterState.price.from = Number(priceFrom);
+      filterState.price.to = Number(priceTo);
+    }
+    refilter();
+  }
   function validatePrice(card, state){
-    var check = false;
-
-    if(state.from == "" && state.to == ""){
-      state.from = 0;
-      state.to = 999999999;
-    }else if(state.from != "" && state.to == ""){
-      state.to = 999999999;
-    }else if(state.from == "" && state.to != ""){
-      state.from = 0;
-    }
-
-    if(Number(card.price) >= state.from && Number(card.price) <= state.to){
-          check = true;
-          console.log(Number(card.price))
-          console.log(state)
-    }
-     return check;
+    var price = Number(card.price);
+     var isFromValid = price >= state.from || (state.from == null);
+     var isToValid = price <= state.to || (state.to == null) ;
+     return isFromValid && isToValid;
   }
 
+  function refilter() {
+    var productCards = document.querySelectorAll('.catalog_cart');
+      for (var i = 0; i<productCards.length; i++) {
+          var ok = true;
+          for (var key in filterFunctions) {
+              var validator = filterFunctions[key]
+              ok = ok && validator(productCards[i].dataset, filterState[key])
+             }
+          productCards[i].style.display = ok ? 'inline-block' : 'none';
+      }
+  }
 
   var typesList = document.querySelector('.filter-type__type');
   var typesItems = typesList.querySelectorAll('input');
@@ -164,7 +152,7 @@ function enableFilters(){
     }
 
   var specialCheck = document.querySelector('.catalog_filters__item:nth-child(2) input');
-  specialCheck.addEventListener('change',handleSpecial);
+  specialCheck.addEventListener('change', handleSpecial);
 
   var dateInput = document.querySelector('.catalog_filters__item:nth-child(4) input');
   dateInput.addEventListener('change', handleDate);
