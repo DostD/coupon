@@ -154,28 +154,7 @@ function renderCart(){
 
    makeCart();
 }
-/*-------------------Open / close buy modal----------------------*/
 
-function toggleModal(){
-  var buyBtn = document.querySelector('.catalog_basket__summ a');
-  var overlay = document.querySelector('.modal_underlay');
-  var modalClose = document.querySelector('.modal__close');
-
-  buyBtn.addEventListener('click' , function(e){
-    e.preventDefault();
-    document.querySelector('.modal_order').style.display = 'block';
-    document.querySelector('.modal_underlay').style.display = 'block';
-  });
-
-  function closeModal(e){
-    e.preventDefault();
-    document.querySelector('.modal_order').style.display = 'none';
-    document.querySelector('.modal_underlay').style.display = 'none';
-  }
-
-  overlay.addEventListener('click' , closeModal);
-  modalClose.addEventListener('click' , closeModal);
-}
 /*----------------------Change layout---------------------------*/
 function toggleLayout(){
   var viewItems = document.querySelectorAll('.catalog_view__item');
@@ -288,39 +267,146 @@ function sortCatalogue(){
   incrBtn.addEventListener('click' , renderByPriceIncr);
   decrBtn.addEventListener('click' , renderByDiscountDecr);
 }
-/*--------------------------Validate modal input form--------------------------------*/
-// function modalValidator(){
-  var regs = [];
+/*-------------------Open / close buy modal----------------------*/
 
-  regs[0] = /^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']?$/u;
-  regs[1] = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/i;
-  regs[2] = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
+function toggleModal(){
+  var buyBtn = document.querySelector('.catalog_basket__summ a');
+  var overlay = document.querySelector('.modal_underlay');
+  var modal = document.querySelector('.modal_order');
+  var modalClose = document.querySelector('.modal__close');
 
-  var inputFields = [];
-
-
-  function checkInput(e){
+  buyBtn.addEventListener('click' , function(e){
     e.preventDefault();
-     inputFields[0] = document.querySelector('.modal__form>.modal__line>.input').value;
-     inputFields[1] = document.querySelector('.modal__form>.modal__line:nth-child(2)>.input').value;
-     inputFields[2] = document.querySelector('.modal__form>.modal__line:nth-child(3)>.input').value;
+    modal.style.display = 'block';
+    document.querySelector('.modal_underlay').style.display = 'block';
+  });
 
-    for (var i=0; i<regs.length; i++){
-      if(regs[i].test(inputFields[i]) == true){
-         success();
-      }
+  function closeModal(e){
+    e.preventDefault();
+    document.querySelector('.modal_order').style.display = 'none';
+    document.querySelector('.modal_underlay').style.display = 'none';
+  }
+
+  overlay.addEventListener('click' , closeModal);
+  modalClose.addEventListener('click' , closeModal);
+}
+/*--------------------------Validate modal input form--------------------------------*/
+
+
+  var regName = /^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']?$/u;
+  var regPhone = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/i;
+  var regMail = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
+
+  var inputFields = document.querySelectorAll('.modal__form input')
+  var timeBoxes = document.querySelectorAll('.checkbox .checkbox__box');
+  var wantBtn = document.querySelector('.want-btn');
+
+  var inputStates = {
+     name: false,
+     phone: false,
+     mail: false
+  }
+
+  function validateForm(e) {
+   e.preventDefault();
+   var currentInput = e.target;
+
+   if(currentInput == inputFields[0]) {
+    if(regName.test(currentInput.value)) {
+      currentInput.style.border="2px solid green";
+      inputStates.name = true;
+    } else {
+      currentInput.style.border="2px solid red";
+      inputStates.name = false;
+    }
+  } else if(currentInput == inputFields[1]) {
+    if(regPhone.test(currentInput.value)) {
+      currentInput.style.border="2px solid green";
+      inputStates.phone = true;
+    } else {
+      currentInput.style.border="2px solid red";
+      inputStates.phone = false;
+    }
+  } else if(currentInput == inputFields[2]) {
+    if(regMail.test(currentInput.value)) {
+      currentInput.style.border="2px solid green";
+      inputStates.mail = true;
+    } else {
+      currentInput.style.border="2px solid red";
+      inputStates.mail = false;
     }
   }
+  console.log(inputStates);
+}
 
-  function success(e){
-     e.preventDefault();
-     var modal = document.querySelector('.modal_order');
-     var successModal = document.querySelector('.modal_success');
-     succesModal.style.display = 'block';
-     modal.style.display = 'none';
+for(var i = 0; i < inputFields.length; i++) {
+  inputFields[i].addEventListener('change', validateForm);
+}
+
+function commitForm() {
+  var loader = document.querySelector('.loader');
+  var modalSuccess = document.querySelector('.modal_success');
+  var overlay = document.querySelector('.modal_underlay');
+  var modal = document.querySelector('.modal_order');
+
+    modal.style.display = 'none';
+    loader.style.display = 'block';
+    loader.style.top = '200px';
+
+      setTimeout(hideLoader, 1000)
+
+  function hideLoader () {
+    loader.style.display = 'none';
+    loader.style.top = '0px';
+    modalSuccess.style.display = "block";
+    modalSuccess.style.top = "200px";
+    setTimeout(hideSuccess, 1500)
   }
 
+  function hideSuccess() {
+    modalSuccess.style.display = "none";
+    overlay.style.display = 'none';
+  }
+}
 
-    var wantBtn = document.querySelector('.want-btn');
-    wantBtn.addEventListener('click', checkInput);
-// }
+function handleOrder(e){
+   e.preventDefault();
+   var check;
+   var f = true;
+   for (var key in inputStates) {
+      if (inputStates[key] == false) {
+        check = false;
+        f = false;
+      } else {
+        check = true;
+      }
+      console.log(check);
+    }
+
+   // validateStates();
+    if(check && f == true){
+      commitForm();
+    } else {
+      alert('Oops!');
+    }
+ }
+
+wantBtn.addEventListener('click',handleOrder)
+
+var modalChecks = document.querySelectorAll('.modal .checkbox__input');
+
+function checkboxToRadio(){
+  for (var i =0; i<modalChecks.length; i++){
+    modalChecks[i].checked = false;
+    if(modalChecks.length > 1){
+      this.checked=true;
+    }
+  }
+}
+
+for(var i = 0; i < modalChecks.length; i++) {
+  modalChecks[i].addEventListener('change', checkboxToRadio);
+}
+
+
+
