@@ -6,28 +6,18 @@ function enableTimers(){
   var MINUTES = 2;
   var SECONDS = 3;
 
-  //var periods = [DAYS,HOURS,MINUTES,SECONDS];
-  /*
-  timer{elem > timer, seconds}
-   */
-   var specialProducts = document.querySelectorAll('.catalog_cart--special');
+  var specialProducts = document.querySelectorAll('.catalog_cart--special');
 
-   //var endingDate = 0;
+   function getInitialSeconds(card){
 
-     function getInitialSeconds(card){
+     var endingDate = card.dataset.dateTo;
+     endingDate = new Date(endingDate.split(' ')[0]);
+     endingDate = endingDate/1000;
+     return endingDate;
 
-       var endingDate = card.dataset.dateTo;
-       endingDate = new Date(endingDate.split(' ')[0]);
-       endingDate = endingDate/1000;
-       return endingDate;
-
-    }
-
-
-  //getInitialSeconds();
+  }
 
   function initTimers(){
-
 
        for(var i=0; i<specialProducts.length; i++){
         var obj = {}
@@ -49,7 +39,6 @@ function enableTimers(){
 
 
   function processTimers(){
-
 
       for(var i=0; i<timers.length; i++){
           decrementTimer(i);
@@ -77,11 +66,8 @@ function enableTimers(){
       var spans = timerItem[i].querySelectorAll('span');
       var num = calcRemainTime(timer.seconds , i);
 
-
       spans[0].innerText = num;
       spans[1].innerText = getPeriodWord(i,num);
-
-
     }
 
   }
@@ -108,14 +94,11 @@ function enableTimers(){
   function getPeriodWord(period, num){
 
       switch(period){
-
           case DAYS: return num === 1 ? 'day' : 'days';
           case HOURS: return num === 1 ? 'hour' : 'hours';
           case MINUTES: return 'min';
           case SECONDS: return 'sec';
       }
   }
-
-
   initTimers();
 }

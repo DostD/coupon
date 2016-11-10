@@ -24,7 +24,6 @@ function enableFilters(){
     }else{
       arr.splice(arr.indexOf(item),1);
     }
-    console.log(arr);
   }
 
   function handleMetro(e) {
@@ -76,7 +75,6 @@ function enableFilters(){
     var inputDate = document.querySelector('.catalog_filters__item:nth-child(4) input');
     var dateValue = (inputDate.valueAsDate)/1000;
     filterState.date = dateValue;
-    console.log(filterState.date);
 
     refilter()
   }
@@ -92,7 +90,6 @@ function enableFilters(){
     }
       var cardDate = getInitialSeconds(card)
       var check = false;
-      console.log(cardDate)
 
       if (cardDate > state || state == null){
         check = true

@@ -60,17 +60,16 @@ function renderCards(reqJSON){
   sortCatalogue();
   enableTimers();
   enableFilters();
-  // modalValidator();
 }
 
 
 /*--------------------Add to cart----------------------*/
 function renderCart(){
   var cart=[],
-      cartList = document.querySelector('.catalog_basket__list'),
-      cartSum = document.querySelector('.catalog_basket__summ_text'),
-      productCards = document.querySelectorAll('.catalog_cart');
-      disabledCards = document.querySelectorAll('.catalog_cart--disabled')
+    cartList = document.querySelector('.catalog_basket__list'),
+    cartSum = document.querySelector('.catalog_basket__summ_text'),
+    productCards = document.querySelectorAll('.catalog_cart');
+    disabledCards = document.querySelectorAll('.catalog_cart--disabled')
 
 
   function updateSum(sum){
@@ -115,8 +114,6 @@ function renderCart(){
       cartList.appendChild(newItem);
 
       sum += Math.ceil((cart[i].price)*100)/100
-      // sum += Math.round(cart[i].price*100)/100;
-
      })
 
     }
@@ -134,10 +131,8 @@ function renderCart(){
        var productName = parentBox.querySelector('.catalog_cart__title').innerText;
        var productPrice = parentBox.querySelector('.catalog_cart__price_new').innerText;
        var item = { name: productName , price: Number(productPrice) };
-       console.log(item);
 
        cart.push(item);
-       console.log(cart);
        makeCart()
 
   }
@@ -267,7 +262,7 @@ function sortCatalogue(){
   incrBtn.addEventListener('click' , renderByPriceIncr);
   decrBtn.addEventListener('click' , renderByDiscountDecr);
 }
-/*-------------------Open / close buy modal----------------------*/
+/*-------------------Open / close order's modal----------------------*/
 
 function toggleModal(){
   var buyBtn = document.querySelector('.catalog_basket__summ a');
@@ -290,7 +285,7 @@ function toggleModal(){
   overlay.addEventListener('click' , closeModal);
   modalClose.addEventListener('click' , closeModal);
 }
-/*--------------------------Validate modal input form--------------------------------*/
+/*--------------------------Validate modal's input form--------------------------------*/
 
 
   var regName = /^[a-zA-Zа-яА-Я'][a-zA-Zа-яА-Я-' ]+[a-zA-Zа-яА-Я']?$/u;
@@ -336,7 +331,6 @@ function toggleModal(){
       inputStates.mail = false;
     }
   }
-  console.log(inputStates);
 }
 
 for(var i = 0; i < inputFields.length; i++) {
@@ -353,7 +347,7 @@ function commitForm() {
     loader.style.display = 'block';
     loader.style.top = '200px';
 
-      setTimeout(hideLoader, 1000)
+    setTimeout(hideLoader, 1000)
 
   function hideLoader () {
     loader.style.display = 'none';
@@ -380,10 +374,8 @@ function handleOrder(e){
       } else {
         check = true;
       }
-      console.log(check);
     }
 
-   // validateStates();
     if(check && f == true){
       commitForm();
     } else {
@@ -391,15 +383,15 @@ function handleOrder(e){
     }
  }
 
-wantBtn.addEventListener('click',handleOrder)
+wantBtn.addEventListener('click', handleOrder);
 
 var modalChecks = document.querySelectorAll('.modal .checkbox__input');
 
 function checkboxToRadio(){
-  for (var i =0; i<modalChecks.length; i++){
+  for (var i=0; i<modalChecks.length; i++){
     modalChecks[i].checked = false;
     if(modalChecks.length > 1){
-      this.checked=true;
+      this.checked = true;
     }
   }
 }
