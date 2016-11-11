@@ -31,6 +31,9 @@ function enableTimers(){
 
           if(obj.seconds <= 0){
             specialProducts[i].classList.add('catalog_cart--disabled');
+            specialProducts[i].addEventListener('click', function(e){
+                e.preventDefault();
+            })
          }
        }
 
